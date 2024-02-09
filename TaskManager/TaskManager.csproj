@@ -21,10 +21,5 @@
     </PackageReference>
     <PackageReference Include="MudBlazor" Version="6.*" />
   </ItemGroup>
-
-  
-  <ItemGroup>
-    <Folder Include="Authentication\" />
-  </ItemGroup>
   
 </Project>

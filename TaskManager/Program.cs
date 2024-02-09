@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
+using TaskManager.Authentication;
 using TaskManager.Components;
 using TaskManager.Data;
 using TaskManager.Middleware;

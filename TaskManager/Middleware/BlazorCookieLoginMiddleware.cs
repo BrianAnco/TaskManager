@@ -53,6 +53,12 @@ namespace TaskManager.Middleware
                     return;
                 }
             }
+            else if (context.Request.Path == "/logout")
+            {
+                await signInMgr.SignOutAsync(); // Cierra la sesión del usuario
+                context.Response.Redirect("/login"); // Redirige al usuario a la página de inicio o de inicio de sesión
+                return;
+            }
             else
             {
                 await _next.Invoke(context);

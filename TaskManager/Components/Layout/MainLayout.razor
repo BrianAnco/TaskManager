@@ -10,7 +10,11 @@
     <AuthorizeView>
         <MudAppBar>
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-            My Application
+            Task Manager
+            <MudSpacer />
+            @context.User.Identity?.Name
+            <span style="margin-left: 10px;"></span>
+            <MudAvatar Color="Color.Tertiary">@GetInitial(context.User.Identity?.Name)</MudAvatar>
         </MudAppBar>
         <MudDrawer @bind-Open="@_drawerOpen">
             <NavMenu />
@@ -27,5 +31,15 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    string GetInitial(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return "?";
+        }
+
+        return name.Substring(0, 1).ToUpper();
     }
 }
