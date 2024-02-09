@@ -1,0 +1,29 @@
+﻿@page "/"
+@attribute [AllowAnonymous]
+
+<link href="/index.css" rel="stylesheet" />
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>TaskManager</h1>
+            <p>Gestiona tus tareas de manera eficiente<br />Proyecto creado para el proceso de selección de EVOTEC</p>
+        </header>
+        <div class="banner">
+            <img src="https://via.placeholder.com/1200x400" alt="TaskManager Banner">
+        </div>
+        <div class="cta">
+            <h2>Únete a TaskManager hoy mismo</h2>
+            <p>Regístrate ahora y comienza a mejorar tu productividad</p>
+            <!-- Botones con clases específicas para aplicar los colores -->
+            <button class="register-btn" onclick="window.location.href='/register'">Regístrate Gratis</button>
+            <button class="login-btn" onclick="window.location.href='/login'">Iniciar Sesión</button>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Brian Sebastian Anco Copaja. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>

@@ -1,0 +1,67 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using TaskManager.Middleware
+@using TaskManager.Models
+@attribute [AllowAnonymous]
+@inject SignInManager<ApplicationUser> SignInMgr
+@inject UserManager<ApplicationUser> UserMgr
+@inject NavigationManager NavMgr
+
+<MudPaper Class="pa-8 mt-5 mx-auto" Style="max-width: 500px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+    <MudContainer Class="my-4">
+        <MudText Typo="Typo.h4" GutterBottom Align="Align.Center">Login</MudText>
+         <EditForm Model="loginDTO">
+            <MudTextField Label="Email" Variant="Variant.Outlined" @bind-Value="loginDTO.Email" FullWidth></MudTextField>
+             <MudTextField Label="Password" Variant="Variant.Outlined" @bind-Value="loginDTO.Password" InputType="InputType.Password" FullWidth>
+            </MudTextField>
+
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <MudAlert Severity="Severity.Error" Class="my-2">@error</MudAlert>
+            }
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2" FullWidth @onclick="LoginClicked">Login</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="mt-2" FullWidth @onclick="Cancel">Cancel</MudButton>
+         </EditForm>
+
+        <MudText Typo="Typo.body2" Class="mt-4">
+            Don't have an account? <MudLink Href="/register">Register here</MudLink>
+        </MudText>
+    </MudContainer>
+</MudPaper>
+
+ @code {
+    private string error;
+    
+    private LoginDTO loginDTO { get; set; } = new();
+
+    private async System.Threading.Tasks.Task LoginClicked()
+    {
+        error = null;
+        var usr = await UserMgr.FindByEmailAsync(loginDTO.Email);
+        if (await SignInMgr.CanSignInAsync(usr))
+        {
+            var result = await SignInMgr.CheckPasswordSignInAsync(usr, loginDTO.Password, true);
+            if (result == Microsoft.AspNetCore.Identity.SignInResult.Success)
+            {
+                Guid key = Guid.NewGuid();
+                BlazorCookieLoginMiddleware.Logins[key] = loginDTO;
+                NavMgr.NavigateTo($"/login?key={key}", true);
+            }
+            else
+            {
+                error = "Login failed. Check your password.";
+            }
+        }
+        else
+        {
+            error = "Your account is blocked";
+        }
+    }
+
+    public async System.Threading.Tasks.Task Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

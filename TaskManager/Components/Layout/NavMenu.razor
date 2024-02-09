@@ -1,0 +1,12 @@
+﻿
+@* <AuthorizeView Roles="Admin"> *@
+
+<MudNavMenu>
+    <MudNavLink Href="home" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        <MudNavLink Href="taskList" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Tasks</MudNavLink>
+    <AuthorizeView Roles="Admin">
+        <MudNavLink Href="userList" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Users</MudNavLink>
+    </AuthorizeView>
+        
+</MudNavMenu>
+

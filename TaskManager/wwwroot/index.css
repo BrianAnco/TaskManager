@@ -1,0 +1,89 @@
+﻿body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f8f8f8;
+	color: #333;
+}
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+header {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+	header h1 {
+		font-size: 36px;
+		margin-bottom: 10px;
+		color: #333;
+	}
+
+	header p {
+		font-size: 18px;
+		color: #666;
+	}
+
+.banner {
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+	.banner img {
+		max-width: 100%;
+	}
+
+.cta {
+	text-align: center;
+}
+
+	.cta h2 {
+		font-size: 28px;
+		margin-bottom: 10px;
+		color: #333;
+	}
+
+	.cta p {
+		font-size: 18px;
+		margin-bottom: 30px;
+		color: #666;
+	}
+
+	.cta button {
+		padding: 15px 40px;
+		font-size: 18px;
+		border: none;
+		color: white;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+		margin-right: 10px;
+	}
+
+.register-btn {
+	background-color: #007BFF; /* Azul */
+}
+
+.login-btn {
+	background-color: #28A745; /* Verde */
+}
+
+.cta button:hover {
+	opacity: 0.8;
+}
+
+footer {
+	text-align: center;
+	margin-top: 40px;
+	padding-top: 20px;
+	border-top: 1px solid #ddd;
+}
+
+	footer p {
+		font-size: 14px;
+		color: #666;
+	}

@@ -1,0 +1,57 @@
+﻿@page "/register"
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@attribute [AllowAnonymous]
+
+<MudPaper Class="pa-8 mt-5 mx-auto" Style="max-width: 500px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+    <MudContainer Class="my-4">
+        <MudText Typo="Typo.h4" GutterBottom Align="Align.Center">Create Account</MudText>
+        <EditForm Model="registerDTO">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+             <MudTextField Label="Email" @bind-Value="registerDTO.Email" Variant="Variant.Outlined" FullWidth Margin="Margin.Dense" InputType="InputType.Email" />
+            <MudTextField Label="Full Name" @bind-Value="registerDTO.Name" Variant="Variant.Outlined" FullWidth Margin="Margin.Dense" />
+            <MudTextField Label="Password" @bind-Value="registerDTO.Password" Type="InputType.Password" Variant="Variant.Outlined" FullWidth Margin="Margin.Dense" />
+            <MudTextField Label="Confirm Password" @bind-Value="registerDTO.ConfirmPassword" Type="InputType.Password" Variant="Variant.Outlined" FullWidth Margin="Margin.Dense" />
+
+            @if (!string.IsNullOrEmpty(Error))
+            {
+                <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="my-4">@Error</MudAlert>
+            }
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="submit" Class="mt-4" FullWidth @onclick="RegisterUser">Register</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="mt-2" FullWidth @onclick="Cancel">Cancel</MudButton>
+
+        </EditForm>
+
+        <MudText Typo="Typo.body2" Class="mt-4" Align="Align.Center">
+            Already have an account? <MudLink Href="/login">Login here</MudLink>
+        </MudText>
+    </MudContainer>
+</MudPaper>
+
+@code {
+    string? Error;
+    private RegisterDTO registerDTO { get; set; } = new();
+
+    public async Task RegisterUser()
+    {
+        var result = await accountService.RegisterAsync(registerDTO);
+        if (result.Flag)
+        {
+            Snackbar.Add("User registered successfully!", Severity.Success);
+            registerDTO = new();
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            Error = result.Message;
+        }
+    }
+
+    public async Task Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}
