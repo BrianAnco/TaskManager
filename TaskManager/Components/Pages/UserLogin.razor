@@ -12,7 +12,7 @@
     <MudContainer Class="my-4">
         <MudText Typo="Typo.h4" GutterBottom Align="Align.Center">Login</MudText>
          <EditForm Model="loginDTO">
-            <MudTextField Label="Email" Variant="Variant.Outlined" @bind-Value="loginDTO.Email" FullWidth></MudTextField>
+             <MudTextField Label="Email" Variant="Variant.Outlined" @bind-Value="loginDTO.Email" FullWidth></MudTextField>
              <MudTextField Label="Password" Variant="Variant.Outlined" @bind-Value="loginDTO.Password" InputType="InputType.Password" FullWidth>
             </MudTextField>
 
@@ -22,8 +22,15 @@
             }
 
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2" FullWidth @onclick="LoginClicked">Login</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="mt-2" FullWidth @onclick="Cancel">Cancel</MudButton>
+             <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="mt-2" FullWidth @onclick="Cancel">Cancel</MudButton>
          </EditForm>
+         
+         @if (isLoading)
+         {
+             <div style="text-align:center; margin-top:100px;">
+                 <MudProgressCircular Color="Color.Primary" Indeterminate="true"></MudProgressCircular>
+             </div>
+         }
 
         <MudText Typo="Typo.body2" Class="mt-4">
             Don't have an account? <MudLink Href="/register">Register here</MudLink>
@@ -33,11 +40,13 @@
 
  @code {
     private string error;
+    private bool isLoading = false;
     
     private LoginDTO loginDTO { get; set; } = new();
 
     private async System.Threading.Tasks.Task LoginClicked()
     {
+        isLoading = true;
         error = null;
         var usr = await UserMgr.FindByEmailAsync(loginDTO.Email);
         if (await SignInMgr.CanSignInAsync(usr))
@@ -58,6 +67,8 @@
         {
             error = "Your account is blocked";
         }
+        
+        isLoading = false;
     }
 
     public async System.Threading.Tasks.Task Cancel()

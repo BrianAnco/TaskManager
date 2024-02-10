@@ -1,5 +1,79 @@
-﻿<h3>TaskList</h3>
+﻿@page "/tasks"
+@inject ITaskService TaskService
+@inject NavigationManager NavigationManager
+
+<MudTable Items="@tasks" Dense="false" Hover="true" Bordered="false" Striped="false" Filter="new Func<TaskDTO,bool>(FilterFunc1)">
+    <ToolBarContent>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="taskDetails" StartIcon="@Icons.Material.Filled.Add">Add Task</MudButton>
+        <MudSpacer />
+        <MudText Typo="Typo.h6">Task List</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Title</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>User</MudTh>
+        <MudTh>Edit</MudTh>
+        <MudTh>Delete</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">@context.Title</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="Status">@context.TaskState.StateName</MudTd>
+        <MudTd DataLabel="User">@context.User.UserName</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="@(() => EditTask(@context.TaskId))"></MudIconButton>
+            </MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => DeleteTask(@context.TaskId))"></MudIconButton>
+            </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 
 @code {
+    private IEnumerable<TaskDTO> tasks = new List<TaskDTO>();
 
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private string searchString1 = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await TaskService.GetAllTasks();
+    }
+
+    private bool FilterFunc1(TaskDTO task) => FilterFunc(task, searchString1);
+
+    private bool FilterFunc(TaskDTO task, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (task.Title?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (task.Description?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (task.TaskState.StateName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (task.User?.UserName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        return false;
+    }
+
+    private void EditTask(string taskId)
+    {
+        NavigationManager.NavigateTo($"/taskEdit/{taskId}");
+    }
+
+    private void DeleteTask(string taskId)
+    {
+        // Implementación del diálogo de confirmación antes de la eliminación o llamada directa al servicio para eliminar
+        Console.WriteLine($"Delete Task: {taskId}"); // Sustituir por la lógica real de eliminación
+    }
 }

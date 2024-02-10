@@ -1,0 +1,43 @@
+﻿@page "/taskDetails"
+@page "/taskDetails/{id}"
+@inject ITaskService TaskService
+@inject NavigationManager NavigationManager
+
+
+<h1>Book Details</h1>
+
+<EditForm Model="@task">
+    <MudTextField Label="Title" @bind-Value="task.Title" FullWidth />
+     <MudTextField Label="Description" @bind-Value="task.Description" FullWidth multiline rows="4" />
+     @* <MudTextField Label="Status" @bind-Value="task.StateName" FullWidth /> *@
+     <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="SaveTask">Save</MudButton>
+     <MudButton Variant="Variant.Text" @onclick="@Cancel">Cancel</MudButton>
+ </EditForm>
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    private TaskDTO task = new TaskDTO();
+    private EditContext editContext = new EditContext(new TaskDTO());
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(id) && id != "new")
+        {
+            task = await TaskService.GetTaskDetails(id);
+        }
+        editContext = new EditContext(task);
+    }
+
+    protected async Task SaveTask()
+    {
+        await TaskService.SaveTask(task);
+        NavigationManager.NavigateTo("/tasks");
+    }
+
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/tasks");
+    }
+}

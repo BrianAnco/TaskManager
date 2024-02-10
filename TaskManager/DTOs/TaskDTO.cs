@@ -1,30 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using TaskManager.Models;
 
-namespace TaskManager.Models
+namespace TaskManager.DTOs
 {
-    public class Task
+    public class TaskDTO
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Asegura que se genere un ID automáticamente
         public string TaskId { get; set; }
 
-        [Required]
         public string UserId { get; set; }
 
-        [Required]
         public string Title { get; set; }
 
-        [Required]
         public string Description { get; set; }
 
-        [Required]
         public string StateId { get; set; }
 
-        [ForeignKey(nameof(UserId))]
         public ApplicationUser User { get; set; }
 
-        [ForeignKey(nameof(StateId))]
         public TaskState TaskState { get; set; }
     }
 }

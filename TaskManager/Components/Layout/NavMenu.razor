@@ -4,9 +4,9 @@
 <div style="display: flex; flex-direction: column; height: 100%;">
     <MudNavMenu>
         <MudNavLink Href="home" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-        <MudNavLink Href="taskList" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Tasks</MudNavLink>
+        <MudNavLink Href="tasks" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Tasks</MudNavLink>
         <AuthorizeView Roles="Admin">
-            <MudNavLink Href="logout" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Users</MudNavLink>
+            <MudNavLink Href="users" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Users</MudNavLink>
         </AuthorizeView>
     </MudNavMenu>
     <div style="margin-top: auto;">

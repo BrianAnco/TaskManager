@@ -12,7 +12,6 @@ namespace TaskManager.Models
         [Required]
         public string StateName { get; set; }
 
-        // Navigation property
         public virtual ICollection<Task> Tasks { get; set; }
     }
 }

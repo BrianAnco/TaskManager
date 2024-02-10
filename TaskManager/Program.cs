@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
-using TaskManager.Authentication;
 using TaskManager.Components;
 using TaskManager.Data;
 using TaskManager.Middleware;
@@ -41,7 +40,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 
 builder.Services.AddMudServices();
 
-builder.Services.AddScoped<IAccount, Account>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 var app = builder.Build();
 
