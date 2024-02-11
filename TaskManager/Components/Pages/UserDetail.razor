@@ -4,35 +4,39 @@
 @inject NavigationManager NavigationManager
 
 
-<h1>User Details</h1>
+<AuthorizeView Roles="Admin">
 
-<div style="max-width: 40%;">
-    <EditForm Model="@user" Context="editContext" OnValidSubmit="@SaveUser">
-        <FluentValidationValidator />
-        <MudTextField Label="Name" @bind-Value="user.Name" />
-        <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.Name)" /></MudAlert>
-        <MudTextField Label="UserName" @bind-Value="user.UserName" />
-        <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.UserName)" /></MudAlert>
-        <MudTextField Label="Email" @bind-Value="user.Email" />
-        <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.Email)" /></MudAlert>
-        @if (!string.IsNullOrEmpty(id) && id != "new")
-        {
-            <MudTextField Label="Current Password" @bind-Value="user.CurrentPassword" InputType="InputType.Password" />
-            <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.CurrentPassword)" /></MudAlert>
-            <MudTextField Label="New Password" @bind-Value="user.NewPassword" InputType="InputType.Password" />
-            <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.NewPassword)" /></MudAlert>
-        }
-        else
-        {
-            <MudTextField Label="Password" @bind-Value="user.CurrentPassword" InputType="InputType.Password" />
-            <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.CurrentPassword)" /></MudAlert>
-        }
-        <div style="margin-top: 30px;">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Save</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" @onclick="Cancel">Cancel</MudButton>
-        </div>
-    </EditForm>
-</div>
+    <h1>User Details</h1>
+
+    <div style="max-width: 40%;">
+        <EditForm Model="@user" Context="editContext" OnValidSubmit="@SaveUser">
+            <FluentValidationValidator />
+            <MudTextField Label="Name" @bind-Value="user.Name" />
+            <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.Name)" /></MudAlert>
+            <MudTextField Label="UserName" @bind-Value="user.UserName" />
+            <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.UserName)" /></MudAlert>
+            <MudTextField Label="Email" @bind-Value="user.Email" />
+            <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.Email)" /></MudAlert>
+            @if (!string.IsNullOrEmpty(id) && id != "new")
+            {
+                <MudTextField Label="Current Password" @bind-Value="user.CurrentPassword" InputType="InputType.Password" />
+                <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.CurrentPassword)" /></MudAlert>
+                <MudTextField Label="New Password" @bind-Value="user.NewPassword" InputType="InputType.Password" />
+                <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.NewPassword)" /></MudAlert>
+            }
+            else
+            {
+                <MudTextField Label="Password" @bind-Value="user.CurrentPassword" InputType="InputType.Password" />
+                <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> user.CurrentPassword)" /></MudAlert>
+            }
+            <div style="margin-top: 30px;">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Save</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" @onclick="Cancel">Cancel</MudButton>
+            </div>
+        </EditForm>
+    </div>
+</AuthorizeView>
+
 
 
 @code {

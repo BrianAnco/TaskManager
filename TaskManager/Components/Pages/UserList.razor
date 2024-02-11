@@ -1,10 +1,12 @@
 ﻿@page "/users"
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "Admin")]
+
 
 <MudTable Items="@users" Dense="false" Hover="true" Bordered="false" Striped="false" Filter="new Func<UserDTO,bool>(FilterFunc1)">
     <ToolBarContent>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="userDetails" StartIcon="@Icons.Material.Filled.Add">Add User</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="userDetails/new" StartIcon="@Icons.Material.Filled.Add">Add User</MudButton>
         <MudSpacer />
         <h1>User List</h1>
         <MudSpacer />
@@ -20,15 +22,14 @@
         <MudTd DataLabel="Name">@context.Name</MudTd>
             <MudTd DataLabel="UserName">@context.UserName</MudTd>
             <MudTd DataLabel="Email">@context.Email</MudTd>
-        <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="@(() => EditUser(@context.ID))"></MudIconButton>
-        </MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="@(() => EditUser(@context.ID))"></MudIconButton>
+            </MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager />
         </PagerContent>
     </MudTable>
-
     @code {
     private IEnumerable<UserDTO> users = new List<UserDTO>();
 
