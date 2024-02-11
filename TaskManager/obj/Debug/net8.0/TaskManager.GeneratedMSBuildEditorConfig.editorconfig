@@ -54,6 +54,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xUYXNrTGlzdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Proyectos/TaskManager/TaskManager/Components/Pages/UserDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xVc2VyRGV0YWlsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Proyectos/TaskManager/TaskManager/Components/Pages/UserList.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xVc2VyTGlzdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 

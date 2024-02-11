@@ -1,0 +1,58 @@
+﻿@page "/userDetails"
+@page "/userDetails/{id}"
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+
+<h1>User Details</h1>
+
+<div style="max-width: 40%;">
+    <EditForm Model="@user" Context="editContext">
+        <MudTextField Label="Name" @bind-Value="user.Name" />
+        <MudTextField Label="UserName" @bind-Value="user.UserName" />
+        <MudTextField Label="Email" @bind-Value="user.Email" />
+        @if (!string.IsNullOrEmpty(id) && id != "new")
+        {
+            <MudTextField Label="Current Password" @bind-Value="user.CurrentPassword" InputType="InputType.Password" />
+            <MudTextField Label="New Password" @bind-Value="user.NewPassword" InputType="InputType.Password" />
+        }
+        else
+        {
+            <MudTextField Label="Password" @bind-Value="user.CurrentPassword" InputType="InputType.Password" />
+        }
+        <div style="margin-top: 30px;">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="SaveUser">Save</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" @onclick="Cancel">Cancel</MudButton>
+        </div>
+    </EditForm>
+</div>
+
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    private UserDTO user = new UserDTO();
+    private EditContext editContext;
+
+    protected override async Task OnInitializedAsync()
+    {
+        editContext = new EditContext(user);
+
+        if (!string.IsNullOrEmpty(id) && id != "new")
+        {
+            user = await UserService.GetUserDetails(id);
+        }
+    }
+
+    protected async Task SaveUser()
+    {
+        await UserService.SaveUser(user);
+        NavigationManager.NavigateTo("/users");
+    }
+
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+}

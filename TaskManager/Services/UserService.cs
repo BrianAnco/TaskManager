@@ -5,17 +5,23 @@ using TaskManager.Data;
 using TaskManager.DTOs;
 using TaskManager.Models;
 using TaskManager.Responses;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace TaskManager.Services
 {
     public class UserService : IUserService
     {
         private readonly AppDbContext _context;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserService(AppDbContext context) { _context = context; }
+        public UserService(AppDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
 
         public async Task<bool> DeleteUser(string id)
         {
@@ -57,13 +63,39 @@ namespace TaskManager.Services
             var user = new Models.ApplicationUser
             {
                 Name = userDto.Name,
-                UserName = userDto.Email,
-                PasswordHash = userDto.Password,
+                UserName = userDto.UserName,
+                PasswordHash = userDto.CurrentPassword,
                 Email = userDto.Email
             };
 
-            _context.ApplicationUsers.Add(user);
-            return await _context.SaveChangesAsync() > 0;
+            var result = await _userManager.CreateAsync(user, userDto.CurrentPassword);
+
+            if (result.Succeeded)
+            {
+                var userRole = await _roleManager.FindByNameAsync("User");
+                if (userRole == null)
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("User"));
+                    await _userManager.AddToRoleAsync(user!, "User");
+
+                    return true;
+
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
+                    return true;
+                }
+
+
+
+                await _userManager.AddToRoleAsync(user, "User");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task<bool> SaveUser(UserDTO userDto)
@@ -79,16 +111,24 @@ namespace TaskManager.Services
         }
         public async Task<bool> UpdateUser(UserDTO userDto)
         {
-            var user = await _context.ApplicationUsers.FindAsync(userDto.ID);
+            // Obtener el usuario usando UserManager en lugar de buscarlo directamente en el contexto de la base de datos.
+            var user = await _userManager.FindByIdAsync(userDto.ID);
             if (user == null) return false;
 
+            // Actualizar las propiedades del usuario según sea necesario.
             user.Name = userDto.Name;
-            user.UserName = userDto.Email;
-            user.PasswordHash = userDto.Password;
+            user.UserName = userDto.Email; // Asegúrate de que esto cumple con tu lógica de negocio.
             user.Email = userDto.Email;
 
-            _context.ApplicationUsers.Update(user);
-            return await _context.SaveChangesAsync() > 0;
+            if (!string.IsNullOrEmpty(userDto.NewPassword))
+            {
+                var passwordChangeResult = await _userManager.ChangePasswordAsync(user, userDto.CurrentPassword, userDto.NewPassword);
+            }
+
+            // Aplicar los cambios usando UserManager.
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
         }
-    } 
+
+    }
 }
