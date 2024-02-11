@@ -48,10 +48,19 @@ namespace TaskManager.Services
                 }
                 else
                 {
-                    var userRole = await roleManager.CreateAsync(new IdentityRole("User"));
-                    if(userRole != null)
+                    var userRole = await roleManager.FindByNameAsync("User");
+                    if(userRole == null)
+                    {
+                        await roleManager.CreateAsync(new IdentityRole("User"));
+                        await userManager.AddToRoleAsync(appUser!, "User");
+
+                        return new ServiceResponse(true, "User created");
+                    }
+                    else
                     {
                         await userManager.AddToRoleAsync(appUser!, "User");
+
+                        return new ServiceResponse(true, "User created");
                     }
 
                     return new ServiceResponse(true, "User created");

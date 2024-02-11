@@ -5,22 +5,24 @@
 
 <MudPaper Class="pa-8 mt-5 mx-auto" Style="max-width: 500px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
     <MudContainer Class="my-4">
-        <MudText Typo="Typo.h4" GutterBottom Align="Align.Center">Create Account</MudText>
-        <EditForm Model="registerDTO">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-
-             <MudTextField Label="Email" @bind-Value="registerDTO.Email" Variant="Variant.Outlined" FullWidth Margin="Margin.Dense" InputType="InputType.Email" />
-            <MudTextField Label="Full Name" @bind-Value="registerDTO.Name" Variant="Variant.Outlined" FullWidth Margin="Margin.Dense" />
-            <MudTextField Label="Password" @bind-Value="registerDTO.Password" Type="InputType.Password" Variant="Variant.Outlined" FullWidth Margin="Margin.Dense" />
-            <MudTextField Label="Confirm Password" @bind-Value="registerDTO.ConfirmPassword" Type="InputType.Password" Variant="Variant.Outlined" FullWidth Margin="Margin.Dense" />
+        <MudText Typo="Typo.h4" GutterBottom Align="Align.Center" Style="margin-bottom:30px;">Create Account</MudText>
+         <EditForm Model="registerDTO" OnValidSubmit="@RegisterUser">
+            <FluentValidationValidator />
+            <MudTextField Label="Email" @bind-Value="registerDTO.Email" Variant="Variant.Outlined" FullWidth InputType="InputType.Email" />
+             <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> registerDTO.Email)" /></MudAlert>
+            <MudTextField Label="Full Name" @bind-Value="registerDTO.Name" Variant="Variant.Outlined" FullWidth/>
+             <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> registerDTO.Name)" /></MudAlert>
+             <MudTextField Label="Password" @bind-Value="registerDTO.Password" Variant="Variant.Outlined" InputType="InputType.Password" FullWidth/>
+             <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> registerDTO.Password)" /></MudAlert>
+             <MudTextField Label="Confirm Password" @bind-Value="registerDTO.ConfirmPassword" Variant="Variant.Outlined" InputType="InputType.Password" FullWidth/>
+             <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> registerDTO.ConfirmPassword)" /></MudAlert>
 
             @if (!string.IsNullOrEmpty(Error))
             {
                 <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="my-4">@Error</MudAlert>
             }
 
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="submit" Class="mt-4" FullWidth @onclick="RegisterUser">Register</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="mt-4" FullWidth>Register</MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="mt-2" FullWidth @onclick="Cancel">Cancel</MudButton>
 
         </EditForm>
@@ -34,20 +36,37 @@
 @code {
     string? Error;
     private RegisterDTO registerDTO { get; set; } = new();
+    private EditContext editContext;
 
-    public async Task RegisterUser()
+    protected override void OnInitialized()
     {
-        var result = await accountService.RegisterAsync(registerDTO);
-        if (result.Flag)
+        editContext = new EditContext(registerDTO);
+    }
+
+    public async System.Threading.Tasks.Task RegisterUser()
+    {
+        var isValid = editContext.Validate(); // Forza la validación del contexto de edición
+
+        if (isValid)
         {
-            Snackbar.Add("User registered successfully!", Severity.Success);
-            registerDTO = new();
-            NavigationManager.NavigateTo("/login");
+            var result = await accountService.RegisterAsync(registerDTO);
+            if (result.Flag)
+            {
+                Snackbar.Add("User registered successfully!", Severity.Success);
+                registerDTO = new();
+                NavigationManager.NavigateTo("/login");
+            }
+            else
+            {
+                Error = result.Message;
+            }
         }
         else
         {
-            Error = result.Message;
+            Error = "Please correct the errors and try again.";
         }
+
+        
     }
 
     public async Task Cancel()

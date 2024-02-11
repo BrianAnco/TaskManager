@@ -10,18 +10,22 @@
 
 <MudPaper Class="pa-8 mt-5 mx-auto" Style="max-width: 500px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
     <MudContainer Class="my-4">
-        <MudText Typo="Typo.h4" GutterBottom Align="Align.Center">Login</MudText>
-         <EditForm Model="loginDTO">
+        <MudText Typo="Typo.h4" GutterBottom Align="Align.Center" Style="margin-bottom:30px;">Login</MudText>
+         <EditForm Model="loginDTO" OnValidSubmit="@LoginClicked">
+             <FluentValidationValidator/>
              <MudTextField Label="Email" Variant="Variant.Outlined" @bind-Value="loginDTO.Email" FullWidth></MudTextField>
-             <MudTextField Label="Password" Variant="Variant.Outlined" @bind-Value="loginDTO.Password" InputType="InputType.Password" FullWidth>
-            </MudTextField>
+             <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> loginDTO.Email)" /></MudAlert>
+             <MudTextField Label="Password" Variant="Variant.Outlined" @bind-Value="loginDTO.Password" InputType="InputType.Password" FullWidth></MudTextField>
+             <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> loginDTO.Password)" /></MudAlert>
+             
+
 
             @if (!string.IsNullOrEmpty(error))
             {
                 <MudAlert Severity="Severity.Error" Class="my-2">@error</MudAlert>
             }
 
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2" FullWidth @onclick="LoginClicked">Login</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-2" FullWidth ButtonType="ButtonType.Submit">Login</MudButton>
              <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="mt-2" FullWidth @onclick="Cancel">Cancel</MudButton>
          </EditForm>
          

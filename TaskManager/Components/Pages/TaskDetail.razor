@@ -9,23 +9,31 @@
 <h1>Task Details</h1>
 
 <div style="max-width: 40%;">
-    <EditForm Model="@task" Context="editContext">
+    <EditForm Model="@task" Context="editContext" OnValidSubmit="@SaveTask">
+        <FluentValidationValidator />
         <MudTextField Label="Title" @bind-Value="task.Title" />
+        <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> task.Title)" /></MudAlert>
+
         <MudTextField Label="Description" @bind-Value="task.Description" multiline rows="4" />
+        <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> task.Description)" /></MudAlert>
+
         <MudSelect Label="Status" @bind-Value="task.StateId">
             @foreach (var state in taskStates)
             {
                 <MudSelectItem Value="@state.StateId">@state.StateName</MudSelectItem>
             }
         </MudSelect>
+        <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> task.StateId)" /></MudAlert>
+
         <MudSelect Label="User" @bind-Value="task.UserId" FullWidth>
             @foreach (var user in users)
             {
                 <MudSelectItem Value="@user.ID">@user.Name</MudSelectItem>
             }
         </MudSelect>
+        <MudAlert Severity="Severity.Error" NoIcon="true"><ValidationMessage For="@(()=> task.UserId)" /></MudAlert>
         <div style="margin-top: 30px;">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="SaveTask">Save</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Save</MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Secondary" @onclick="Cancel">Cancel</MudButton>
         </div>
     </EditForm>

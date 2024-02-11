@@ -1,10 +1,43 @@
 ﻿@page "/home"
-@using Microsoft.AspNetCore.Authorization
+@using TaskManager.Data
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext _context
 
 <PageTitle>Home</PageTitle>
 
-<h1>Status</h1>
+<h1>Dashboard</h1>
 
 <AuthorizeView>
-    Hello @context.User.Identity?.Name!
+    <Authorized>
+        <!-- Ajustado para el gráfico de pastel -->
+        <MudChart ChartType="ChartType.Pie" InputData="@statusData" InputLabels="@statusLabels" />
+    </Authorized>
 </AuthorizeView>
+
+@code {
+    public List<ChartSeries> tasksPerUserData = new List<ChartSeries>();
+    // Para el gráfico de pastel, maneja los datos y las etiquetas directamente
+    public double[] statusData;
+    public string[] statusLabels;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tasksPerUser = await _context.Tasks
+            .GroupBy(t => t.UserId)
+            .Select(group => new { UserId = group.Key, Count = group.Count() })
+            .ToListAsync();
+
+        // Ajusta esta consulta para incluir el nombre del estado
+        var tasksByStatus = await _context.Tasks
+            .Include(t => t.TaskState) // Asegúrate de que 'State' es el nombre correcto de la propiedad de navegación
+            .GroupBy(t => t.TaskState.StateName) // Agrupa por el nombre del estado
+            .Select(group => new { StatusName = group.Key, Count = group.Count() })
+            .ToListAsync();
+
+        // Ya no necesitas agregar tasksPerUserData aquí si solo te interesa el gráfico de pastel
+
+        // Preparar los datos para el gráfico de pastel usando el nombre del estado
+        statusData = tasksByStatus.Select(x => (double)x.Count).ToArray();
+        statusLabels = tasksByStatus.Select(x => x.StatusName).ToArray(); // Usa el nombre del estado para las etiquetas
+    }
+}
