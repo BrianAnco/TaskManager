@@ -2,6 +2,7 @@
 using TaskManager.Data;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.DTOs;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TaskManager.Services
 {
@@ -77,7 +78,7 @@ namespace TaskManager.Services
 
         public async Task<bool> SaveTask(TaskDTO taskDto)
         {
-            if (taskDto.TaskId == string.Empty)
+            if (taskDto.TaskId.IsNullOrEmpty())
             {
                 return await InsertTask(taskDto);
             }

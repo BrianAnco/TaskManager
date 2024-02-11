@@ -1,5 +1,62 @@
-﻿<h3>UserList</h3>
+﻿@page "/users"
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
 
-@code {
+<MudTable Items="@users" Dense="false" Hover="true" Bordered="false" Striped="false" Filter="new Func<UserDTO,bool>(FilterFunc1)">
+    <ToolBarContent>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="userDetails" StartIcon="@Icons.Material.Filled.Add">Add User</MudButton>
+        <MudSpacer />
+        <MudText Typo="Typo.h6">User List</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>UserName</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Operations</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="UserName">@context.UserName</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="@(() => EditUser(@context.ID))"></MudIconButton>
+        </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    @code {
+    private IEnumerable<UserDTO> users = new List<UserDTO>();
+
+    private string searchString1 = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserService.GetAllUsers();
+    }
+
+    private bool FilterFunc1(UserDTO user) => FilterFunc(user, searchString1);
+
+    private bool FilterFunc(UserDTO user, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (user.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (user.UserName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (user.Email?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        return false;
+    }
+
+    private void EditUser(string userId)
+    {
+        NavigationManager.NavigateTo($"/userDetails/{userId}");
+    }
 
 }

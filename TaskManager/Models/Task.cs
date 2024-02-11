@@ -6,7 +6,6 @@ namespace TaskManager.Models
     public class Task
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Asegura que se genere un ID automáticamente
         public string TaskId { get; set; }
 
         [Required]

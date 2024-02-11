@@ -42,6 +42,8 @@ builder.Services.AddMudServices();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ITaskStateService, TaskStateService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
